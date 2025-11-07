@@ -1,6 +1,7 @@
 import 'package:bb.flutter/bb.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:smb_connect/smb_connect.dart';
 import 'package:smb_connect/src/exceptions.dart';
 
@@ -117,47 +118,47 @@ class SambaService {
 
   Future<void> connect({required Credentials credentials}) async {
     try {
-    smb = await SmbConnect.connectAuth(
-      host: host,
-      domain: '',
-      username: credentials.login,
-      password: credentials.password,
-      onDisconnect: (_) {
-        smb = null;
-        shares = [];
-        Debug.info('smb://$name disconnected accidentally');
-        onDisconnected.fire(());
-      },
-    );
-    this.credentials = credentials;
-    shares.clear();
-    try {
-      final sh = await smb!.listShares();
-      for (final s in sh) {
-        final f = await file(s.path);
-        shares.add(f);
+      smb = await SmbConnect.connectAuth(
+        host: host,
+        domain: '',
+        username: credentials.login,
+        password: credentials.password,
+        onDisconnect: (_) {
+          smb = null;
+          shares = [];
+          Debug.info('smb://$name disconnected accidentally');
+          onDisconnected.fire(());
+        },
+      );
+      this.credentials = credentials;
+      shares.clear();
+      try {
+        final sh = await smb!.listShares();
+        for (final s in sh) {
+          final f = await file(s.path);
+          shares.add(f);
+        }
+      } catch (error) {
+        Debug.warning('problem loading smb.shares');
       }
-    } catch (error) {
-      Debug.warning('problem loading smb.shares');
-    }
-    shares.shuffle();
-    shares.sort((a, b) {
-      bool isMusic(String name) {
-        final n = name.toLowerCase();
-        return n.contains('music') || n.contains('audio');
-      }
+      shares.shuffle();
+      shares.sort((a, b) {
+        bool isMusic(String name) {
+          final n = name.toLowerCase();
+          return n.contains('music') || n.contains('audio');
+        }
 
-      final ma = isMusic(a.name);
-      final mb = isMusic(b.name);
-      if (ma == mb) return 0;
-      return ma ? -1 : 1;
-    });
-    Store.write('cred.$name', credentials.toJson());
-    Debug.info('smb://$name connected');
-    onConnect.fire(());
-    } catch(error) {
-      if(error is SmbException) {
-        throw Exception(error.message);
+        final ma = isMusic(a.name);
+        final mb = isMusic(b.name);
+        if (ma == mb) return 0;
+        return ma ? -1 : 1;
+      });
+      Store.write('cred.$name', credentials.toJson());
+      Debug.info('smb://$name connected');
+      onConnect.fire(());
+    } catch (error) {
+      if (error is SmbException) {
+        throw NetworkException(error.message);
       }
       rethrow;
     }
@@ -165,7 +166,7 @@ class SambaService {
 
   Future<SambaFile> file(String path) async {
     final file = await smb?.file(path);
-    if(file == null) {
+    if (file == null) {
       throw Exception('smb:$name, can`t find file $path');
     }
     return SambaFile(service: this, file: file);
@@ -218,6 +219,15 @@ class ServiceEvent {
 
   @override
   String toString() => 'ServiceEvent(service: $service, event: $event)';
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+class NetworkException extends Error {
+  final String message;
+  NetworkException(this.message);
+  @override
+  String toString() => 'NetworkException: $message';
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
