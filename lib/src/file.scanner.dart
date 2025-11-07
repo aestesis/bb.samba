@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 class FileScanner {
   final Set<StorageLocation> storages;
-  final void Function(GenericFile file) onFile;
+  final Future<void> Function(GenericFile file) onFile;
   final Set<String> extensions;
   final List<GenericFile> files = [];
   bool disposed = false;
@@ -71,7 +71,9 @@ class FileScanner {
                     : error.toString();
                 Debug.info('🔍📁 ${f.path} 🔥 $err');
               }
-            } else if (extensions.contains(f.path.fileExt())) {}
+            } else if (extensions.contains(f.path.fileExt())) {
+              await onFile(f);
+            }
           } catch (error, stackTrace) {
             if (error is NetworkException) {
               Debug.info('🔍 ${error.message}');

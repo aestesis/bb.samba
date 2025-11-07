@@ -1,7 +1,6 @@
 import 'package:bb.flutter/bb.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:smb_connect/smb_connect.dart';
 import 'package:smb_connect/src/exceptions.dart';
 
@@ -84,6 +83,7 @@ class Network {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 class SambaService {
+  static Set<String> preferedFolders = {};
   final onDisconnected = Event();
   final onConnect = Event();
   String get key => '$name.$host.$port';
@@ -142,17 +142,19 @@ class SambaService {
         Debug.warning('problem loading smb.shares');
       }
       shares.shuffle();
-      shares.sort((a, b) {
-        bool isMusic(String name) {
-          final n = name.toLowerCase();
-          return n.contains('music') || n.contains('audio');
-        }
+      if (preferedFolders.isNotEmpty) {
+        shares.sort((a, b) {
+          bool isPrefered(String name) {
+            final n = name.toLowerCase();
+            return preferedFolders.contains(n);
+          }
 
-        final ma = isMusic(a.name);
-        final mb = isMusic(b.name);
-        if (ma == mb) return 0;
-        return ma ? -1 : 1;
-      });
+          final ma = isPrefered(a.name);
+          final mb = isPrefered(b.name);
+          if (ma == mb) return 0;
+          return ma ? -1 : 1;
+        });
+      }
       Store.write('cred.$name', credentials.toJson());
       Debug.info('smb://$name connected');
       onConnect.fire(());
