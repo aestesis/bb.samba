@@ -13,6 +13,7 @@ dependencies:
 
   collection: any
 
+  permission_handler: any
   bonsoir: any
   smb_connect: any
 
