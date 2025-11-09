@@ -56,7 +56,9 @@ class FileScanner {
   }
 
   Future<void> launch() async {
-    await addLocalFiles();
+    if (storages.contains(StorageLocation.device)) {
+      await addLocalFiles();
+    }
     while (!disposed) {
       if (running) {
         if (files.isNotEmpty) {
@@ -105,8 +107,8 @@ class FileScanner {
         }
       } catch (error) {
         Debug.warning(error);
-      }      
-      final  directory = Directory('/storage/emulated/0');
+      }
+      final directory = Directory('/storage/emulated/0');
       files.add(DeviceFile(entity: directory));
       // TODO: add sdcard
       // https://android.stackexchange.com/questions/55481/how-can-i-determine-the-sd-cards-path
