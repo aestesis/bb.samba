@@ -2,6 +2,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:bb.flutter/bb.dart';
+import 'package:collection/collection.dart';
+
+import '../bb_samba.dart';
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,6 +25,25 @@ abstract class GenericFile {
   bool operator ==(Object other) => other is GenericFile && other.uri == uri;
   @override
   int get hashCode => uri.hashCode;
+  static Future<GenericFile> from({required String uri}) async {
+    final u = Uri.parse(uri);
+    switch (u.scheme) {
+      case 'smb':
+        final path =
+            '/${uri.substring('smb://'.length).afterToken('/').decodedUri}';
+        final service = Network.services.firstWhereOrNull(
+          (s) => s.name == u.host,
+        );
+        if (service == null) {
+          throw StateError('No samba service named ${u.host}');
+        }
+        return await service.file(path);
+      case 'file':
+        final path = uri.substring('file:/'.length).decodedUri;
+        return DeviceFile(entity: File(path));
+    }
+    throw UnimplementedError('Unknown uri scheme ${u.scheme}://');
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
