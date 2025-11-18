@@ -14,12 +14,14 @@ class FileScanner {
   final Future<void> Function(GenericFile file) onFile;
   final Set<String> extensions;
   final List<GenericFile> files = [];
+  String? debugUri;
   bool disposed = false;
   bool running = true;
   FileScanner({
     required Iterable<String> extensions,
     required this.onFile,
     this.storages = StorageLocation.all,
+    this.debugUri,
   }) : extensions = {...extensions} {
     launch();
     if (storages.contains(StorageLocation.network)) {
@@ -42,7 +44,15 @@ class FileScanner {
         Debug.info('🔍 $smb discovered');
         break;
       case ServiceEventType.connected:
-        files.addAll(smb.shares);
+        if (debugUri != null) {
+          try {
+            final file = await GenericFile.from(uri: debugUri!);
+            files.add(file);
+            debugUri = null;
+          } catch (_) {}
+        } else {
+          files.addAll(smb.shares);
+        }
         Debug.info('🔍 $smb connected, added ${smb.shares.length} shares');
         break;
       case ServiceEventType.disconnected:
@@ -56,7 +66,13 @@ class FileScanner {
   }
 
   Future<void> launch() async {
-    if (storages.contains(StorageLocation.device)) {
+    if (debugUri != null) {
+      try {
+        final file = await GenericFile.from(uri: debugUri!);
+        files.add(file);
+        debugUri = null;
+      } catch (_) {}
+    } else if (storages.contains(StorageLocation.device)) {
       await addLocalFiles();
     }
     while (!disposed) {
