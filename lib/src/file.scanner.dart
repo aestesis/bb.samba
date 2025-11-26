@@ -23,7 +23,7 @@ class FileScanner {
     required this.onFile,
     this.storages = StorageLocation.all,
     this.debugUri,
-    this.speed = const Duration(milliseconds: 200),
+    this.speed = const Duration(milliseconds: 10),
   }) : extensions = {...extensions} {
     launch();
     if (storages.contains(StorageLocation.network)) {
@@ -97,7 +97,6 @@ class FileScanner {
             } else if (extensions.contains(f.path.fileExt())) {
               await onFile(f);
             }
-            await BB.sleep(speed);
           } catch (error, stackTrace) {
             if (error is NetworkException) {
               Debug.info('🔍 ${error.message}');
@@ -106,6 +105,7 @@ class FileScanner {
               Debug.info(stackTrace);
             }
           }
+          await BB.sleep(speed);
         } else {
           await BB.sleep(Duration(seconds: 1));
         }
