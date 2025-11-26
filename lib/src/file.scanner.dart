@@ -14,6 +14,7 @@ class FileScanner {
   final Future<void> Function(GenericFile file) onFile;
   final Set<String> extensions;
   final List<GenericFile> files = [];
+  Duration speed;
   String? debugUri;
   bool disposed = false;
   bool running = true;
@@ -22,6 +23,7 @@ class FileScanner {
     required this.onFile,
     this.storages = StorageLocation.all,
     this.debugUri,
+    this.speed = const Duration(milliseconds: 200),
   }) : extensions = {...extensions} {
     launch();
     if (storages.contains(StorageLocation.network)) {
@@ -95,6 +97,7 @@ class FileScanner {
             } else if (extensions.contains(f.path.fileExt())) {
               await onFile(f);
             }
+            await BB.sleep(speed);
           } catch (error, stackTrace) {
             if (error is NetworkException) {
               Debug.info('🔍 ${error.message}');
