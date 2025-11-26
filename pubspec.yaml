@@ -15,7 +15,8 @@ dependencies:
 
   permission_handler: any
   bonsoir: any
-  smb_connect: any
+  smb_connect: 
+    path: /Users/renanyoy/git/smb_connect
 
   mime_type: any
 

@@ -87,21 +87,14 @@ class FileScanner {
                 files.insertAll(0, fl.shuffled());
                 await BB.sleep(Duration(milliseconds: 100));
               } catch (error) {
-                final err = error is NetworkException
-                    ? error.message
-                    : error.toString();
-                Debug.info('🔍📁 ${f.path} 🔥 $err');
+                Debug.info('🔍📁 ${f.path} 🔥 $error');
               }
             } else if (extensions.contains(f.path.fileExt())) {
               await onFile(f);
             }
           } catch (error, stackTrace) {
-            if (error is NetworkException) {
-              Debug.info('🔍 ${error.message}');
-            } else {
-              Debug.info('🔍 $error');
-              Debug.info(stackTrace);
-            }
+            Debug.info('🔍 $error');
+            Debug.info(stackTrace);
           }
         } else {
           await BB.sleep(Duration(seconds: 1));

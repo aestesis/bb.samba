@@ -2,7 +2,6 @@ import 'package:bb.flutter/bb.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:collection/collection.dart';
 import 'package:smb_connect/smb_connect.dart';
-import 'package:smb_connect/src/exceptions.dart';
 
 import 'file.samba.dart';
 
@@ -159,9 +158,6 @@ class SambaService {
       Debug.info('smb://$name connected');
       onConnect.fire(());
     } catch (error) {
-      if (error is SmbException) {
-        throw NetworkException(error.message);
-      }
       rethrow;
     }
   }
@@ -221,15 +217,6 @@ class ServiceEvent {
 
   @override
   String toString() => 'ServiceEvent(service: $service, event: $event)';
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-class NetworkException extends Error {
-  final String message;
-  NetworkException(this.message);
-  @override
-  String toString() => 'NetworkException: $message';
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
