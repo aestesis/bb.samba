@@ -93,7 +93,12 @@ class SambaService {
   Credentials? credentials;
   bool get isConnected => smb != null;
   List<SambaFile> shares = [];
-  SambaService({required this.name, required this.host, required this.port});
+  SambaService({
+    required this.name,
+    required this.host,
+    required this.port,
+    this.credentials,
+  });
   static SambaService fromBonsoir(BonsoirService service) => SambaService(
     name: service.name,
     host: service.host ?? '',
@@ -184,6 +189,26 @@ class SambaService {
 
   @override
   int get hashCode => key.hashCode;
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'name': name,
+      'host': host,
+      'port': port,
+      'credentials': credentials?.toJson(),
+    };
+  }
+
+  factory SambaService.fromJson(Map<String, dynamic> map) {
+    return SambaService(
+      name: map['name'] as String,
+      host: map['host'] as String,
+      port: map['port'] as int,
+      credentials: map['credentials'] != null
+          ? Credentials.fromJson(map['credentials'] as Map<String, dynamic>)
+          : null,
+    );
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
