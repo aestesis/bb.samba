@@ -44,6 +44,13 @@ abstract class GenericFile {
     }
     throw UnimplementedError('Unknown uri scheme ${u.scheme}://');
   }
+
+  Future<Uint8List> get content async {
+    final raf = await open();
+    final bytes = await raf.read(size);
+    await raf.close();
+    return bytes;
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
