@@ -16,14 +16,14 @@ dependencies:
   permission_handler: any
   bonsoir: any
   smb_connect: 
-    path: /Users/renanyoy/git/smb_connect
+    git: https://github.com/renanyoy/smb_connect.git
 
   mime_type: any
 
   bb_dart:
     git: https://github.com/aestesis/bb.dart.git
   bb.flutter:
-    path: /Users/renanyoy/git/bb.flutter
+    git: https://github.com/aestesis/bb.flutter.git
 
 
 dev_dependencies:
