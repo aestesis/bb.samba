@@ -20,8 +20,11 @@ dependencies:
 
   mime_type: any
 
+  bb_dart:
+    git: https://github.com/aestesis/bb.dart.git
   bb.flutter:
     path: /Users/renanyoy/git/bb.flutter
+
 
 dev_dependencies:
   flutter_test:

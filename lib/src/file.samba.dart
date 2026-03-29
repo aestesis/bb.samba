@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:bb.flutter/bb.dart';
+import 'package:bb_dart/bb_dart.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:smb_connect/smb_connect.dart';
 
