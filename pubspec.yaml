@@ -1,11 +1,10 @@
 name: bb_samba
 description: "samba network service"
-version: 0.0.1
+version: 0.0.2
 publish_to: none
 
 environment:
-  sdk: ^3.10.0-290.1.beta
-  flutter: ">=1.17.0"
+  sdk: ">=3.10.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -15,11 +14,11 @@ dependencies:
 
   permission_handler: any
   bonsoir: any
-  smb_connect: 
-    git: https://github.com/renanyoy/smb_connect.git
 
   mime_type: any
 
+  smb_connect: 
+    git: https://github.com/renanyoy/smb_connect.git
   bb_dart:
     git: https://github.com/aestesis/bb.dart.git
   bb.flutter:
