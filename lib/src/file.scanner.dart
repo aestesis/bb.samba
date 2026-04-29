@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 class FileScanner {
+  final scanning = EventValue<bool>(false);
   final Set<StorageLocation> storages;
   final Future<void> Function(GenericFile file) onFile;
   final Set<String> extensions;
@@ -81,6 +82,7 @@ class FileScanner {
         if (files.isNotEmpty) {
           final f = files.first;
           files.removeAt(0);
+          scanning.set(true);
           try {
             if (f.isDirectory) {
               try {
@@ -101,6 +103,7 @@ class FileScanner {
           await BB.sleep(Duration(seconds: 1));
         }
       } else {
+        scanning.set(false);
         await BB.sleep(Duration(seconds: 5));
       }
     }
