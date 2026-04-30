@@ -185,7 +185,7 @@ extension StorageLocationSet on Set<StorageLocation> {
     if (length == 1) {
       return first.icon;
     }
-    return Icons.all_inclusive;
+    return Icons.multiple_stop;
   }
 
   static List<Set<StorageLocation>> get all => [
