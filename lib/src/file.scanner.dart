@@ -167,7 +167,7 @@ enum StorageLocation {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 extension StorageLocationSet on Set<StorageLocation> {
-  IconData? get icon {
+  IconData get icon {
     if (length == 1) {
       return first.icon;
     }
