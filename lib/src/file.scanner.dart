@@ -147,13 +147,19 @@ enum StorageLocation {
     }
   }
 
-  static StorageLocation from({required GenericFile file}) {
+  static StorageLocation from({GenericFile? file, String? uri}) {
     if (file is DeviceFile) {
-      return StorageLocation.device;
+      return device;
     } else if (file is SambaFile) {
-      return StorageLocation.network;
+      return network;
     }
-    return StorageLocation.generic;
+    if (uri?.startsWith('file://') ?? false) {
+      return .device;
+    }
+    if (uri?.startsWith('smb://') ?? false) {
+      return .network;
+    }
+    return generic;
   }
 
   static const Set<StorageLocation> all = {...StorageLocation.values};
