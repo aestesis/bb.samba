@@ -6,6 +6,7 @@ import 'package:bb_dart/bb_dart.dart';
 import 'package:bb_samba/bb_samba.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,11 +122,24 @@ class FileScanner {
       } catch (error) {
         Debug.warning(error);
       }
-      final directory = Directory('/storage/emulated/0');
+      final directory = await localDirectory;
       files.add(DeviceFile(entity: directory));
-      // TODO: add sdcard
-      // https://android.stackexchange.com/questions/55481/how-can-i-determine-the-sd-cards-path
+      if (Platform.isAndroid) {
+        // TODO: add sdcard
+        // https://android.stackexchange.com/questions/55481/how-can-i-determine-the-sd-cards-path
+      }
     }
+  }
+
+  Future<Directory> get localDirectory async {
+    if (Platform.isAndroid) {
+      return Directory('/storage/emulated/0');
+    }
+    if (Platform.isMacOS) {
+      return Directory('~/Documents');
+    }
+    return await getDownloadsDirectory() ??
+        await getApplicationDocumentsDirectory();
   }
 }
 

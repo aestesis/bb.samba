@@ -17,6 +17,8 @@ dependencies:
 
   mime_type: any
 
+  path_provider: any
+
   smb_connect: 
     git: https://github.com/renanyoy/smb_connect.git
   bb_dart:
