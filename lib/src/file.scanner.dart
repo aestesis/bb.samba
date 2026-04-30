@@ -26,7 +26,7 @@ class FileScanner {
     this.storages = StorageLocation.all,
     this.debugUri,
   }) : extensions = {...extensions} {
-    launch();
+    _launch();
     if (storages.contains(StorageLocation.network)) {
       Network.onUpdate.on(_onNetworkUpdate);
     }
@@ -68,7 +68,7 @@ class FileScanner {
     }
   }
 
-  Future<void> launch() async {
+  Future<void> _launch() async {
     if (debugUri != null) {
       try {
         final file = await GenericFile.from(uri: debugUri!);
@@ -76,7 +76,7 @@ class FileScanner {
         debugUri = null;
       } catch (_) {}
     } else if (storages.contains(StorageLocation.device)) {
-      await addLocalFiles();
+      await _addLocalFiles();
     }
     while (!disposed) {
       if (running) {
@@ -110,7 +110,7 @@ class FileScanner {
     }
   }
 
-  Future<void> addLocalFiles() async {
+  Future<void> _addLocalFiles() async {
     if (Platform.isAndroid) {
       try {
         if (!(await Permission.storage.isGranted)) {
