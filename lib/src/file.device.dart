@@ -22,6 +22,8 @@ class DeviceFile extends GenericFile {
   @override
   int get size => (entity as File).lengthSync();
   DeviceFile({required this.entity});
+  static DeviceFile from({required String path}) =>
+      DeviceFile(entity: File(path));
   @override
   Future<Iterable<GenericFile>> listFiles() async {
     final List<DeviceFile> files = [];
