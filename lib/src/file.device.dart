@@ -55,6 +55,11 @@ class DeviceFile extends GenericFile {
 
   @override
   String get uri => 'file:/$path';
+
+  @override
+  Future<void> createFile({bool recursive = false}) async {
+    await (entity as File).create(recursive: recursive);
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

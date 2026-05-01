@@ -48,42 +48,53 @@ class SambaFile extends GenericFile {
       mimeFromExtension(name.fileExt()) ?? 'application/data';
 
   Future<void> delete() async {
-      await service.smb?.delete(file);
+    await service.smb?.delete(file);
   }
 
   @override
   Future<bool> exists() async {
-      return file.canRead();
+    return file.canRead();
   }
 
   Future<SambaFile> rename(String dstPath, {bool replace = false}) async {
-      final nfile = await service.smb!.rename(file, dstPath, replace: replace);
-      return SambaFile(service: service, file: nfile);
+    final nfile = await service.smb!.rename(file, dstPath, replace: replace);
+    return SambaFile(service: service, file: nfile);
   }
 
   @override
   Future<Stream<Uint8List>> openRead([int? start, int? end]) async {
-      return await service.smb!.openRead(file, start, end);
+    return await service.smb!.openRead(file, start, end);
   }
 
   Future<IOSink> openWrite({bool append = false}) async {
-      return await service.smb!.openWrite(file, append: append);
+    return await service.smb!.openWrite(file, append: append);
   }
 
   @override
   Future<RandomAccessFile> open({FileMode mode = FileMode.read}) async {
-      return await service.smb!.open(file, mode: mode);
+    return await service.smb!.open(file, mode: mode);
   }
 
   @override
   Future<Iterable<GenericFile>> listFiles() async {
-      return (await service.smb!.listFiles(
-        file,
-      )).map((s) => SambaFile(file: s, service: service));
+    return (await service.smb!.listFiles(
+      file,
+    )).map((s) => SambaFile(file: s, service: service));
   }
 
   @override
   String get uri => 'smb://${service.name}${file.path}';
+
+  @override
+  Future<void> createFile({bool recursive = false}) async {
+    final subpath = path.beforeTokenLast('/').split('/');
+    var dpath = subpath.first;
+    for (int i = 1; i < subpath.length; i++) {
+      dpath = '$dpath/${subpath[i]}';
+      await service.smb!.createFolder(dpath);
+    }
+    await service.smb!.create(file);
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
