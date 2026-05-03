@@ -122,7 +122,7 @@ class FileScanner {
       } catch (error) {
         Debug.warning(error);
       }
-      final directory = await localDirectory;
+      final directory = await deviceDirectory;
       files.add(DeviceFile(entity: directory));
       if (Platform.isAndroid) {
         // TODO: add sdcard
@@ -131,7 +131,7 @@ class FileScanner {
     }
   }
 
-  Future<Directory> get localDirectory async {
+  Future<Directory> get deviceDirectory async {
     if (Platform.isAndroid) {
       return Directory('/storage/emulated/0');
     }
