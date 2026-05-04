@@ -45,6 +45,20 @@ abstract class GenericFile {
     throw UnimplementedError('Unknown uri scheme ${u.scheme}://');
   }
 
+  static bool isAvailable({required String uri}) {
+    final u = Uri.parse(uri);
+    switch (u.scheme) {
+      case 'smb':
+        final service = Network.services.firstWhereOrNull(
+          (s) => s.name == u.host,
+        );
+        return service != null;
+      case 'file':
+        return true;
+    }
+    throw UnimplementedError('Unknown uri scheme ${u.scheme}://');
+  }
+
   Future<Uint8List> get content async {
     final raf = await open();
     final bytes = await raf.read(size);
