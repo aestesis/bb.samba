@@ -52,7 +52,7 @@ abstract class GenericFile {
         final service = Network.services.firstWhereOrNull(
           (s) => s.name == u.host,
         );
-        return service != null;
+        return service != null && service.isConnected;
       case 'file':
         return true;
     }
