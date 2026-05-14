@@ -15,6 +15,7 @@ abstract class GenericFile {
   int get size;
   Future<Iterable<GenericFile>> listFiles();
   String get mimeType;
+  Future<void> delete();
   Future<RandomAccessFile> open({FileMode mode = FileMode.read});
   Future<Stream<Uint8List>> openRead([int? start, int? end]);
   String get uri;

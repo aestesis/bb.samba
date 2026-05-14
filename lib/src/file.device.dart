@@ -42,6 +42,11 @@ class DeviceFile extends GenericFile {
   }
 
   @override
+  Future<void> delete() async {
+    await entity.delete(recursive: true);
+  }
+
+  @override
   Future<Stream<Uint8List>> openRead([int? start, int? end]) async {
     return (entity as File)
         .openRead(start, end)

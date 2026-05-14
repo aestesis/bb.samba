@@ -47,6 +47,7 @@ class SambaFile extends GenericFile {
   String get mimeType =>
       mimeFromExtension(name.fileExt()) ?? 'application/data';
 
+  @override
   Future<void> delete() async {
     await service.smb?.delete(file);
   }
