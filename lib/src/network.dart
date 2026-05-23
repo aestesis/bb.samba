@@ -103,7 +103,7 @@ class SambaService {
   });
   static SambaService fromBonsoir(BonsoirService service) => SambaService(
     name: service.name,
-    host: service.hostname ?? '',
+    host: service.host ?? '',
     port: service.port,
   );
   Future<void> disconnect() async {

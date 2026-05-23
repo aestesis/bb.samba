@@ -13,8 +13,9 @@ dependencies:
   collection: any
 
   permission_handler: any
-  bonsoir: any
 
+  bonsoir: 6.1.0
+    
   mime_type: any
 
   path_provider: any
