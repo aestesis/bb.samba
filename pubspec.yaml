@@ -14,7 +14,7 @@ dependencies:
 
   permission_handler: any
 
-  bonsoir: 6.1.0
+  bonsoir: 7.1.1
     
   mime_type: any
 
