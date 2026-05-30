@@ -87,9 +87,10 @@ class SambaService {
   static Set<String> preferedFolders = {};
   final onDisconnected = Event();
   final onConnect = Event();
-  String get key => '$name.$host.$port';
+  String get key => '$name.$hostname.$port';
   String name;
-  String host;
+  String hostname;
+  List<String> addresses;
   int port;
   SmbConnect? smb;
   Credentials? credentials;
@@ -97,13 +98,15 @@ class SambaService {
   List<SambaFile> shares = [];
   SambaService({
     required this.name,
-    required this.host,
+    required this.hostname,
+    required this.addresses,
     required this.port,
     this.credentials,
   });
   static SambaService fromBonsoir(BonsoirService service) => SambaService(
     name: service.name,
-    host: service.host ?? '',
+    hostname: service.hostname ?? '',
+    addresses: service.hostAddresses,
     port: service.port,
   );
   Future<void> disconnect() async {
@@ -125,7 +128,7 @@ class SambaService {
   Future<void> connect({required Credentials credentials}) async {
     try {
       smb = await SmbConnect.connectAuth(
-        host: host,
+        host: hostname,
         domain: '',
         username: credentials.login,
         password: credentials.password,
@@ -195,7 +198,8 @@ class SambaService {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'name': name,
-      'host': host,
+      'host': hostname,
+      'addresses': addresses,
       'port': port,
       'credentials': credentials?.toJson(),
     };
@@ -204,7 +208,8 @@ class SambaService {
   factory SambaService.fromJson(Map<String, dynamic> map) {
     return SambaService(
       name: map['name'] as String,
-      host: map['host'] as String,
+      hostname: map['host'] as String,
+      addresses: map.containsKey('addresses') ? List<String>.from(map['addresses']) : [],
       port: map['port'] as int,
       credentials: map['credentials'] != null
           ? Credentials.fromJson(map['credentials'] as Map<String, dynamic>)
