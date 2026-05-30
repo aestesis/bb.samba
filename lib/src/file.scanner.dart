@@ -17,6 +17,7 @@ class FileScanner {
   final Future<void> Function(GenericFile file) onFile;
   final Set<String> extensions;
   final List<GenericFile> files = [];
+  final Map<SambaService, Set<GenericFile>> holdedFiles = {};
   String? debugUri;
   bool disposed = false;
   bool running = true;
@@ -53,12 +54,18 @@ class FileScanner {
             files.add(file);
             debugUri = null;
           } catch (_) {}
+        } else if (holdedFiles.containsKey(smb)) {
+          files.addAll(holdedFiles[smb]!);
+          holdedFiles[smb] = {};
         } else {
           files.addAll(smb.shares);
         }
         Debug.info('🔍 $smb connected, added ${smb.shares.length} shares');
         break;
       case ServiceEventType.disconnected:
+        holdedFiles[smb] = {
+          ...files.where((f) => f is SambaFile && f.service == smb),
+        };
         files.removeWhere((f) => f is SambaFile && f.service == smb);
         Debug.info('🔍 $smb disconnect');
         break;
