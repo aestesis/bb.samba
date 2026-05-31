@@ -108,6 +108,7 @@ class FileScanner {
             Debug.info(stackTrace);
           }
         } else {
+          scanning.set(false);
           await BB.sleep(Duration(seconds: 1));
         }
       } else {
